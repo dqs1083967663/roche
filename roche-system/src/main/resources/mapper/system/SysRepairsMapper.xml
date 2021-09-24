@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roche.system.mapper.SysRepairsMapper">
+    
+    <resultMap type="SysRepairs" id="SysRepairsResult">
+        <result property="repairsId"    column="repairs_id"    />
+        <result property="repairsImg"    column="repairs_img"    />
+        <result property="repairsStatus"    column="repairs_status"    />
+        <result property="repairsName"    column="repairs_name"    />
+        <result property="repairsBill"    column="repairs_bill"    />
+        <result property="repairsFile"    column="repairs_file"    />
+    </resultMap>
+
+    <sql id="selectSysRepairsVo">
+        select repairs_id, repairs_img, repairs_status, repairs_name, repairs_bill, repairs_file from sys_repairs
+    </sql>
+
+    <select id="selectSysRepairsList" parameterType="SysRepairs" resultMap="SysRepairsResult">
+        <include refid="selectSysRepairsVo"/>
+        <where>  
+            <if test="repairsImg != null  and repairsImg != ''"> and repairs_img = #{repairsImg}</if>
+            <if test="repairsStatus != null  and repairsStatus != ''"> and repairs_status = #{repairsStatus}</if>
+            <if test="repairsName != null  and repairsName != ''"> and repairs_name like concat('%', #{repairsName}, '%')</if>
+            <if test="repairsBill != null  and repairsBill != ''"> and repairs_bill = #{repairsBill}</if>
+            <if test="repairsFile != null  and repairsFile != ''"> and repairs_file = #{repairsFile}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysRepairsByRepairsId" parameterType="Long" resultMap="SysRepairsResult">
+        <include refid="selectSysRepairsVo"/>
+        where repairs_id = #{repairsId}
+    </select>
+        
+    <insert id="insertSysRepairs" parameterType="SysRepairs">
+        insert into sys_repairs
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="repairsId != null">repairs_id,</if>
+            <if test="repairsImg != null">repairs_img,</if>
+            <if test="repairsStatus != null">repairs_status,</if>
+            <if test="repairsName != null">repairs_name,</if>
+            <if test="repairsBill != null">repairs_bill,</if>
+            <if test="repairsFile != null">repairs_file,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="repairsId != null">#{repairsId},</if>
+            <if test="repairsImg != null">#{repairsImg},</if>
+            <if test="repairsStatus != null">#{repairsStatus},</if>
+            <if test="repairsName != null">#{repairsName},</if>
+            <if test="repairsBill != null">#{repairsBill},</if>
+            <if test="repairsFile != null">#{repairsFile},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysRepairs" parameterType="SysRepairs">
+        update sys_repairs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="repairsImg != null">repairs_img = #{repairsImg},</if>
+            <if test="repairsStatus != null">repairs_status = #{repairsStatus},</if>
+            <if test="repairsName != null">repairs_name = #{repairsName},</if>
+            <if test="repairsBill != null">repairs_bill = #{repairsBill},</if>
+            <if test="repairsFile != null">repairs_file = #{repairsFile},</if>
+        </trim>
+        where repairs_id = #{repairsId}
+    </update>
+
+    <delete id="deleteSysRepairsByRepairsId" parameterType="Long">
+        delete from sys_repairs where repairs_id = #{repairsId}
+    </delete>
+
+    <delete id="deleteSysRepairsByRepairsIds" parameterType="String">
+        delete from sys_repairs where repairs_id in 
+        <foreach item="repairsId" collection="array" open="(" separator="," close=")">
+            #{repairsId}
+        </foreach>
+    </delete>
+
+</mapper>
