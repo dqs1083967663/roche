@@ -162,7 +162,17 @@ public class ExcelUtil<T>
         createExcelField();
         createWorkbook();
     }
-
+    public void initbyname(List<T> list, String sheetName, Type type)
+    {
+        if (list == null)
+        {
+            list = new ArrayList<T>();
+        }
+        this.list = list;
+        this.sheetName = sheetName;
+        this.type = type;
+        createWorkbook();
+    }
     /**
      * 对excel表单默认第一个索引名转换成list
      * 
@@ -367,6 +377,18 @@ public class ExcelUtil<T>
     }
 
     /**
+     * 对list数据源将其里面的指定了列数据导入到excel表单
+     *
+     * @param list 导出数据集合
+     * @param sheetName 工作表的名称
+     * @return 结果
+     */
+    public AjaxResult exportExcelbyname(List<T> list, String sheetName,String[] name )
+    {
+        this.initbyname(list, sheetName, Type.EXPORT);
+        return exportExcel(name);
+    }
+    /**
      * 对list数据源将其里面的数据导入到excel表单
      * 
      * @param response 返回数据
@@ -459,7 +481,33 @@ public class ExcelUtil<T>
             IOUtils.closeQuietly(out);
         }
     }
-
+    /**
+     * 对list数据源将其里面的数据导入到excel表单
+     *
+     * @return 结果
+     */
+    public AjaxResult exportExcel(String[] name )
+    {
+        OutputStream out = null;
+        try
+        {
+            writeSheet(name);
+            String filename = encodingFilename(sheetName);
+            out = new FileOutputStream(getAbsoluteFile(filename));
+            wb.write(out);
+            return AjaxResult.success(filename);
+        }
+        catch (Exception e)
+        {
+            log.error("导出Excel异常{}", e.getMessage());
+            throw new UtilException("导出Excel失败，请联系网站管理员！");
+        }
+        finally
+        {
+            IOUtils.closeQuietly(wb);
+            IOUtils.closeQuietly(out);
+        }
+    }
     /**
      * 创建写入数据到Sheet
      */
@@ -487,7 +535,34 @@ public class ExcelUtil<T>
             }
         }
     }
+    /**
+     * 创建写入数据到Sheet
+     */
+    public void writeSheet(String[] name )
+    {
+        // 取出一共有多少个sheet.
+        double sheetNo = Math.ceil(list.size() / sheetSize);
+        for (int index = 0; index <= sheetNo; index++)
+        {
+            createSheet(sheetNo, index);
 
+            // 产生一行
+            Row row = sheet.createRow(0);
+            int column = 0;
+            // 写入各个字段的列头名称
+
+            for (int i = 0; i < name.length; i++) {
+
+                this.createCell( row, column++,name[i]);
+            }
+
+            if (Type.EXPORT.equals(type))
+            {
+                fillExcelData(index, row);
+                addStatisticsRow();
+            }
+        }
+    }
     /**
      * 填充excel数据
      * 
@@ -596,7 +671,20 @@ public class ExcelUtil<T>
         cell.setCellStyle(styles.get("header"));
         return cell;
     }
-
+    /**
+     * 创建单元格
+     */
+    public Cell createCell( Row row, int column,String name )
+    {
+        // 创建列
+        Cell cell = row.createCell(column);
+        // 写入列信息
+        cell.setCellValue(name);
+        Excel arrt =(Excel)new Object();
+        setDataValidation(arrt, row, column);
+        cell.setCellStyle(styles.get("header"));
+        return cell;
+    }
     /**
      * 设置单元格信息
      * 
@@ -1077,6 +1165,7 @@ public class ExcelUtil<T>
             this.fields.add(new Object[] { field, attr });
         }
     }
+
 
     /**
      * 创建一个工作簿

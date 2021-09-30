@@ -2,6 +2,9 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
 	<th:block th:include="include :: header('字典类型列表')" />
+	<style>
+
+	</style>
 </head>
 <body class="gray-bg">
 	<div class="container-div">
@@ -125,7 +128,9 @@
 		                var actions = [];
 		                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.dictId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
 		                actions.push('<a class="btn btn-info btn-xs ' + listFlag + '" href="javascript:void(0)" onclick="detail(\'' + row.dictId + '\')"><i class="fa fa-list-ul"></i>列表</a> ');
-		                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.dictId + '\')"><i class="fa fa-remove"></i>删除</a>');
+		                actions.push('<a class="  btn btn-danger btn-xs ' + removeFlag + ' ' + 'del'+row.dictId +
+							'" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.dictId +
+							'\')"><i class="fa fa-remove"></i>删除</a>');
 		                return actions.join('');
 		            }
 		        }]
@@ -144,5 +149,10 @@
             $.operate.get(prefix + "/refreshCache");
         }
 	</script>
+	<style>
+.del101{
+	display: none;
+}
+	</style>
 </body>
 </html>

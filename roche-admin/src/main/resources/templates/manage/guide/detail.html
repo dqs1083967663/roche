@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('操作日志详细')" />
+	<th:block th:include="include :: jsonview-css" />
+	<th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<style type="text/css">
+	.kv-file-remove{
+		display: none;
+	}
+	.btn-primary {
+		display: none;
+	}
+</style>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-guide-edit" th:object="${sysGuide}">
+		<input name="guideId" th:field="*{guideId}" type="hidden">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">指引描述：</label>
+			<div class="col-sm-8">
+				<input name="guideDescribe" th:field="*{guideDescribe}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">指引图片：</label>
+			<div class="col-sm-8">
+				<input name="imageUrls" id="imageUrls" th:value="*{guideImg}" type="hidden">
+				<div class="row">
+					<div class="form-group">
+						<div class="file-loading">
+							<input id="imgFile" name="file" class="file" type="file" multiple >
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</form>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: bootstrap-fileinput-js"/>
+<script th:inline="javascript">
+    var image = [];//图片回显
+    if ($("#imageUrls").val()) {
+        image = $('#imageUrls').val().split(',');
+        for (var i = 0; i < image.length; i++) {
+            image[i] = '<img src="' + image[i] + '" class="file-preview-image " style="width:auto;height:auto;max-width:100%;max-height:100%;">';
+        }
+    }
+    $("#imgFile").fileinput({
+        showUpload: false, //是否显示上传按钮
+        showRemove: false, //显示移除按钮
+        showPreview: true, //是否显示预览
+        showCaption: false,//是否显示标题
+        dropZoneEnabled: false,//是否显示拖拽区域
+        initialPreview: image,
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roche.manage.mapper.SysGuideMapper">
+    
+    <resultMap type="SysGuide" id="SysGuideResult">
+        <result property="guideId"    column="guide_id"    />
+        <result property="guideDescribe"    column="guide_describe"    />
+        <result property="guideImg"    column="guide_img"    />
+    </resultMap>
+
+    <sql id="selectSysGuideVo">
+        select guide_id, guide_describe, guide_img from sys_guide
+    </sql>
+
+    <select id="selectSysGuideList" parameterType="SysGuide" resultMap="SysGuideResult">
+        <include refid="selectSysGuideVo"/>
+        <where>  
+            <if test="guideDescribe != null  and guideDescribe != ''"> and guide_describe like concat('%', #{guideDescribe}, '%')</if>
+            <if test="guideImg != null  and guideImg != ''"> and guide_img = #{guideImg}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysGuideByGuideId" parameterType="Long" resultMap="SysGuideResult">
+        <include refid="selectSysGuideVo"/>
+        where guide_id = #{guideId}
+    </select>
+        
+    <insert id="insertSysGuide" parameterType="SysGuide" useGeneratedKeys="true" keyProperty="guideId">
+        insert into sys_guide
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="guideDescribe != null">guide_describe,</if>
+            <if test="guideImg != null">guide_img,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="guideDescribe != null">#{guideDescribe},</if>
+            <if test="guideImg != null">#{guideImg},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysGuide" parameterType="SysGuide">
+        update sys_guide
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="guideDescribe != null">guide_describe = #{guideDescribe},</if>
+            <if test="guideImg != null">guide_img = #{guideImg},</if>
+        </trim>
+        where guide_id = #{guideId}
+    </update>
+
+    <delete id="deleteSysGuideByGuideId" parameterType="Long">
+        delete from sys_guide where guide_id = #{guideId}
+    </delete>
+
+    <delete id="deleteSysGuideByGuideIds" parameterType="String">
+        delete from sys_guide where guide_id in 
+        <foreach item="guideId" collection="array" open="(" separator="," close=")">
+            #{guideId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -155,4 +155,18 @@ public class CommonController
             log.error("下载文件失败", e);
         }
     }
+
+    /**
+     * 多图片删除时调用
+     * @param key
+     * @return
+     */
+    @PostMapping( "/imgeurldelete")
+    @ResponseBody
+    public AjaxResult removelog(String key)
+    {
+        return AjaxResult.success();
+
+    }
+
 }

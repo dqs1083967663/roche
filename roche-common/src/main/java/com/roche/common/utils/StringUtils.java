@@ -554,4 +554,43 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     {
         return (T) obj;
     }
+
+    /**
+     * 删除url中的个别图片
+     * @param imageUrl 删除的url
+     * @param AllUrl
+     * @return
+     */
+    public static String urldelete(String imageUrl,String AllUrl){
+        String afterUrl =AllUrl;
+
+        if (afterUrl.replace(","+imageUrl+",","").equals(AllUrl)){
+            //url不在中间
+
+
+            if(afterUrl.replace(","+imageUrl,"").equals(AllUrl)){
+                //url不在最后
+
+                if (afterUrl.replace(imageUrl+",","").equals(AllUrl)){
+                    //只有一个url
+                    return afterUrl.replace(imageUrl,"");
+                }else{
+
+                    //url在最前
+                    return afterUrl.replace(imageUrl+",","");
+                }
+
+
+            }else {
+                //url在最后
+                return afterUrl.replace(","+imageUrl,"");
+            }
+
+
+        }else{
+            //url在中间
+            return afterUrl.replace(","+imageUrl,"");
+        }
+
+    };
 }

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <th:block th:include="include :: header('操作日志详细')" />
+    <th:block th:include="include :: jsonview-css" />
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<body>
+<a>tesat</a>
+
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-guide-open" >
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">复选框：</label>
+                <div class="col-sm-9">
+                    <label class="check-box">
+                        <input type="checkbox" value="指引描述" name="outname">指引描述</label>
+                    <label class="check-box">
+                        <input type="checkbox" value="指引图片" name="outname">指引图片</label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var prefix = ctx + "manage/guide";
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/exportbyname", $('#form-guide-open').serialize());
+        }
+    }
+
+</script>
+</body>
+</html>

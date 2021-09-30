@@ -371,8 +371,9 @@ var table = {
                     var currentId = $.common.isEmpty(formId) ? $('form').attr('id') : formId;
                     var params = $("#" + table.options.id).bootstrapTable('getOptions');
                     var dataParam = $("#" + currentId).serializeArray();
-                    dataParam.push({ "name": "orderByColumn", "value": params.sortName });
-                    dataParam.push({ "name": "isAsc", "value": params.sortOrder });
+                    // dataParam.push({ "name": "orderByColumn", "value": params.sortName });
+                    // dataParam.push({ "name": "isAsc", "value": params.sortOrder });
+                    dataParam.push({ "remark": "isAsc", "value": params.sortOrder });
                     $.modal.loading("正在导出数据，请稍后...");
                     $.post(table.options.exportUrl, dataParam, function(result) {
                         if (result.code == web_status.SUCCESS) {
@@ -714,7 +715,7 @@ var table = {
                 return selects;
             }
         },
-        // 弹出层封装处理
+        // 弹出层封装处理modal
         modal: {
             // 显示图标
             icon: function(type) {
@@ -1091,6 +1092,16 @@ var table = {
                     var url = table.options.cleanUrl;
                     $.operate.submit(url, "post", "json", "");
                 });
+            },
+            // 导出信息
+            open: function(id) {
+                table.set();
+                $.modal.open("导出" + table.options.modalName, $.operate.openUrl(id));
+            },
+            // 导出访问地址
+            openUrl: function(id) {
+                var url = $.common.isEmpty(id) ? table.options.openUrl.replace("{id}", "") : table.options.openUrl.replace("{id}", id);
+                return url;
             },
             // 添加信息
             add: function(id) {
