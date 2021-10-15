@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roche.manage.mapper.RepairsHistoryMapper">
+    
+    <resultMap type="RepairsHistory" id="RepairsHistoryResult">
+        <result property="selfId"    column="self_id"    />
+        <result property="repairsName"    column="repairs_name"    />
+        <result property="machineType"    column="machine_type"    />
+        <result property="usefulCount"    column="useful_count"    />
+        <result property="uselessCount"    column="useless_count"    />
+        <result property="usefulPercent"    column="useful_percent"    />
+        <result property="useNum"    column="use_num"    />
+    </resultMap>
+
+    <sql id="selectRepairsHistoryVo">
+        select self_id, repairs_name, machine_type, useful_count, useless_count from sys_repairs_self
+    </sql>
+
+    <select id="selectRepairsHistoryList" parameterType="RepairsHistory" resultMap="RepairsHistoryResult">
+        <include refid="selectRepairsHistoryVo"/>
+        <where>  
+            <if test="repairsName != null  and repairsName != ''"> and repairs_name like concat('%', #{repairsName}, '%')</if>
+            <if test="machineType != null  and machineType != ''"> and machine_type like concat('%', #{machineType}, '%')</if>
+
+            and self_id in
+            (SELECT self_id FROM sys_repairs_self WHERE self_id not in ( SELECT parent_id from sys_repairs_self )  )
+        </where>
+    </select>
+    
+    <select id="selectRepairsHistoryBySelfId" parameterType="Long" resultMap="RepairsHistoryResult">
+        <include refid="selectRepairsHistoryVo"/>
+        where self_id = #{selfId}
+    </select>
+
+    <select id="selectUserNumBySelfId" parameterType="Long" resultType="int">
+        SELECT count(*) FROM sys_repairs_self_click_history WHERE self_id = #{selfId};
+
+    </select>
+        <!---->
+    <!--<insert id="insertRepairsHistory" parameterType="RepairsHistory">-->
+        <!--insert into repairs_history-->
+        <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+            <!--<if test="selfId != null">self_id,</if>-->
+            <!--<if test="repairsName != null">repairs_name,</if>-->
+            <!--<if test="machineType != null">machine_type,</if>-->
+            <!--<if test="usefulCount != null">useful_count,</if>-->
+            <!--<if test="uselessCount != null">useless_count,</if>-->
+            <!--<if test="usefulPercent != null">useful_percent,</if>-->
+            <!--<if test="useNum != null">use_num,</if>-->
+         <!--</trim>-->
+        <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+            <!--<if test="selfId != null">#{selfId},</if>-->
+            <!--<if test="repairsName != null">#{repairsName},</if>-->
+            <!--<if test="machineType != null">#{machineType},</if>-->
+            <!--<if test="usefulCount != null">#{usefulCount},</if>-->
+            <!--<if test="uselessCount != null">#{uselessCount},</if>-->
+            <!--<if test="usefulPercent != null">#{usefulPercent},</if>-->
+            <!--<if test="useNum != null">#{useNum},</if>-->
+         <!--</trim>-->
+    <!--</insert>-->
+
+    <!--<update id="updateRepairsHistory" parameterType="RepairsHistory">-->
+        <!--update repairs_history-->
+        <!--<trim prefix="SET" suffixOverrides=",">-->
+            <!--<if test="repairsName != null">repairs_name = #{repairsName},</if>-->
+            <!--<if test="machineType != null">machine_type = #{machineType},</if>-->
+            <!--<if test="usefulCount != null">useful_count = #{usefulCount},</if>-->
+            <!--<if test="uselessCount != null">useless_count = #{uselessCount},</if>-->
+            <!--<if test="usefulPercent != null">useful_percent = #{usefulPercent},</if>-->
+            <!--<if test="useNum != null">use_num = #{useNum},</if>-->
+        <!--</trim>-->
+        <!--where self_id = #{selfId}-->
+    <!--</update>-->
+
+    <!--<delete id="deleteRepairsHistoryBySelfId" parameterType="Long">-->
+        <!--delete from repairs_history where self_id = #{selfId}-->
+    <!--</delete>-->
+
+    <!--<delete id="deleteRepairsHistoryBySelfIds" parameterType="String">-->
+        <!--delete from repairs_history where self_id in -->
+        <!--<foreach item="selfId" collection="array" open="(" separator="," close=")">-->
+            <!--#{selfId}-->
+        <!--</foreach>-->
+    <!--</delete>-->
+
+</mapper>

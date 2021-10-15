@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改自助排查问题管理')" />
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<!--<style>-->
+    <!--video {-->
+        <!--width: 200px;-->
+        <!--height:200px;-->
+    <!--}-->
+<!--</style>-->
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-self-edit" th:object="${sysRepairsSelf}">
+            <input name="selfId" th:field="*{selfId}"  id="selfId" type="hidden">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">父id：</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <input id="treeId" name="parentId" type="hidden" th:field="*{parentId}"  />
+                        <input class="form-control" type="text" onclick="selectSelfTree()" id="treeName" readonly="true" th:field="*{parentName}">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">名称：</label>
+                <div class="col-sm-8">
+                    <input name="repairsName" th:field="*{repairsName}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">描述：</label>
+                <div class="col-sm-8">
+                    <input name="nameDescribe" th:field="*{nameDescribe}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">解决方法：</label>
+                <div class="col-sm-8">
+                    <textarea name="solution" class="form-control">[[*{solution}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">图片描述：</label>
+                <div class="col-sm-8">
+                    <textarea name="pictureDescription" class="form-control">[[*{pictureDescription}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">图片：</label>
+                <div class="col-sm-8">
+                    <input type="hidden" name="picture" id="imageUrls"  th:field="*{picture}">
+                    <div class="file-loading">
+                        <input class="form-control" id="picture" name="file" type="file">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">视频描述：</label>
+                <div class="col-sm-8">
+                    <textarea name="videoDescription" class="form-control">[[*{videoDescription}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">视频：</label>
+                <div class="col-sm-8">
+                    <input type="hidden" name="video" th:field="*{video}">
+                    <div class="file-loading">
+                        <input class="form-control videoclass " id="video" name="file" type="file">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">附件描述：</label>
+                <div class="col-sm-8">
+                    <textarea name="accessoryDescription" class="form-control">[[*{accessoryDescription}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">附件：</label>
+                <div class="col-sm-8">
+                    <input type="hidden" name="accessory" th:field="*{accessory}">
+                    <div class="file-loading">
+                        <input class="form-control file-upload" id="accessory" name="file" type="file">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">其他：</label>
+                <div class="col-sm-8">
+                    <textarea name="other" class="form-control">[[*{other}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">显示顺序：</label>
+                <div class="col-sm-8">
+                    <input name="orderNum" th:field="*{orderNum}" class="form-control" type="text">
+                </div>
+            </div>
+            <!--<div class="form-group">    -->
+                <!--<label class="col-sm-3 control-label">设备类型：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input name="machineType" th:field="*{machineType}" class="form-control" type="text">-->
+                <!--</div>-->
+            <!--</div>-->
+
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">设备类型：</label>
+                <div class="col-sm-8">
+                    <select name="machineType" class="form-control m-b deType"
+                            th:with="type=${@machine.selectRocheMachineTypeList()}">
+                        <option th:each="machine : ${type}" th:text="${machine.machineTypeName}"
+                                th:value="${machine.machineType}" th:field="*{machineType}"></option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: bootstrap-fileinput-js"/>
+    <script th:inline="javascript">
+        var prefix = ctx + "manage/self";
+        $("#form-self-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-self-edit').serialize());
+            }
+        }
+
+        $(".videoclass").each(function (i) {
+            var val = $("input[name='" + this.id + "']").val()
+            $(this).fileinput({
+                'uploadUrl': ctx + 'common/upload',
+                allowedFileExtensions : [ "mp4","avi","dat","3gp","mov","rmvb"],
+                // 这个配置就是解决办法了,初始化时限制图片大小
+                previewSettings: {
+                    video: {width: '213px', height: '200px'},
+                },
+                initialPreviewAsData: true,
+                initialPreview: [val],
+                maxFileCount: 1,
+                maxFileSize : 153600,//文件最大153600kb=150M ,
+                initialPreviewConfig: [ //回显类型配置(重要)
+                    {
+                        type:"video",
+                        filetype:'video/mp4'
+                    }
+                ],
+                autoReplace: true
+            }).on('fileuploaded', function (event, data, previewId, index) {
+                $("input[name='" + event.currentTarget.id + "']").val(data.response.url)
+            }).on('fileremoved', function (event, id, index) {
+                $("input[name='" + event.currentTarget.id + "']").val('')
+            })
+            $(this).fileinput('_initFileActions');
+        });
+        $(".file-upload").each(function (i) {
+            var val = $("input[name='" + this.id + "']").val()
+            $(this).fileinput({
+                'uploadUrl': ctx + 'common/upload',
+                initialPreviewAsData: true,
+                initialPreview: [val],
+                maxFileCount: 1,
+
+                maxFileSize : 153600,//文件最大153600kb=150M ,
+                initialPreviewConfig: [ //回显类型配置(重要)
+                    {
+                        type:"aplication",
+                        filetype:'aplication/zip'
+                    }
+                ],
+                autoReplace: true
+            }).on('fileuploaded', function (event, data, previewId, index) {
+                $("input[name='" + event.currentTarget.id + "']").val(data.response.url)
+            }).on('fileremoved', function (event, id, index) {
+                $("input[name='" + event.currentTarget.id + "']").val('')
+            })
+            $(this).fileinput('_initFileActions');
+        });
+
+        /*自助排查问题管理-编辑-选择父自助排查问题管理树*/
+        function selectSelfTree() {
+            var options = {
+                title: '自助排查问题管理选择',
+                width: "380",
+                url: prefix + "/selectSelfTree/" + $("#treeId").val(),
+                callBack: doSubmit
+            };
+            $.modal.openOptions(options);
+        }
+
+        function doSubmit(index, layero){
+            var body = $.modal.getChildFrame(index);
+            $("#treeId").val(body.find('#treeId').val());
+            $("#treeName").val(body.find('#treeName').val());
+            $.modal.close(index);
+        }
+
+
+
+        //多图片的修改
+        var image = [];//图片回显
+        var uploadImageArray = [];//所有已上传的图片路径
+        var imageConfig = [];//预览的参数
+        var selfId= $("#selfId").val();
+        if ($("#imageUrls").val()) {
+            image = $('#imageUrls').val().split(',');
+            for (var i = 0; i < image.length; i++) {
+                uploadImageArray.push(image[i]);
+                imageConfig[i] = {url:  "/imgeurldelete", key: image[i]}
+                image[i] = '<img src="' + image[i] + '" class="file-preview-image kv-preview-data" style="width:auto;height:auto;max-width:100%;max-height:100%;">';
+            }
+        }
+
+        $("#picture").fileinput({
+            language: 'zh', //设置语言
+            uploadUrl:"/common/upload", //上传的地址
+            allowedFileExtensions: ['jpg', 'png'],//接收的文件后缀
+            uploadAsync: false, //默认异步上传,这里设置了同步
+            showUpload: false, //是否显示上传按钮
+            showRemove: false, //显示移除按钮
+            showPreview: true, //是否显示预览
+            showCaption: false,//是否显示标题
+            browseClass: "btn btn-primary", //按钮样式
+            dropZoneEnabled: true,//是否显示拖拽区域
+            maxFileCount: 0, //表示允许同时上传的最大文件个数
+            enctype: 'multipart/form-data',
+            validateInitialCount: true,
+            maxFileSize: 0,
+            initialPreview: image,
+            initialPreviewConfig: imageConfig //配置预览的参数
+            , overwriteInitial: false,
+            showCaption: false,
+            previewFileIcon: "<i class='glyphicon glyphicon-king'></i>"
+        }).on("filebatchselected", function (event, previewId, files) {
+            $("#picture").fileinput("upload");
+        }).on('filebatchuploadsuccess', function (event, data, previewId, index) {
+            //同步上传成功回调，如果是异步上传成功会回调fileuploaded，用错的话，回调是不会执行的
+            //通过 data.response.Json对象属性 获得返回数据
+            if (data.response.code == 0) {
+                var imageUrl = data.response.url;
+                uploadImageArray.push(imageUrl);
+                $('#imageUrls').val(uploadImageArray.join());
+                $.modal.msg("图片上传成功!");
+                $.modal.closeLoading();
+            } else {
+                $.modal.alertWarning(data.response.msg);
+            }
+        }).on("filepredelete", function (event, key, jqXHR, data) {   //预览图片删除
+
+            for (var i = 0; i < uploadImageArray.length; i++) {
+                if (uploadImageArray[i] == key  ) {
+                    uploadImageArray.splice(i, 1);
+                    //赋值给images
+                    $('#imageUrls').val(uploadImageArray.join());
+                    successFlag = true;
+                        break;
+                }
+            }
+        }).on("filesuccessremove", function (event, data, previewId, index) {
+            //在删除initialPreview内容集中的每个缩略图文件之后触发此事件
+            // location.reload();
+        });
+
+    </script>
+</body>
+</html>

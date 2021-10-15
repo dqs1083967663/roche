@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('自助排查问题点击历史列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>用户id：</label>
+                                <input type="text" name="userId"/>
+                            </li>
+                            <li>
+                                <!--<label>问题id：</label>-->
+                                <input type="hidden" name="selfId" th:value="${selfId}" />
+                            </li>
+                            <li>
+                                <label>是否有帮助：</label>
+                                <input type="text" name="usefullCheck"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <!--<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="manage:history:add">-->
+                    <!--<i class="fa fa-plus"></i> 添加-->
+                <!--</a>-->
+                <!--<a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="manage:history:edit">-->
+                    <!--<i class="fa fa-edit"></i> 修改-->
+                <!--</a>-->
+                <!--<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="manage:history:remove">-->
+                    <!--<i class="fa fa-remove"></i> 删除-->
+                <!--</a>-->
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="manage:history:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('manage:history:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('manage:history:remove')}]];
+        var prefix = ctx + "manage/history";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "自助排查问题点击历史",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'oid',
+                    title: '主键oid',
+                    visible: false
+                },
+                {
+                    field: 'userId',
+                    title: '用户id',
+                    visible: false
+                },
+                    {
+                        field: 'userName',
+                        title: '用户名'
+                    },
+                // {
+                //     field: 'selfId',
+                //     title: '问题id'
+                // },
+                {
+                    field: 'usefullCheck',
+                    title: '是否有帮助'
+                },
+                // {
+                //     title: '操作',
+                //     align: 'center',
+                //     formatter: function(value, row, index) {
+                //         var actions = [];
+                //         // actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.oid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                //         // actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.oid + '\')"><i class="fa fa-remove"></i>删除</a>');
+                //         return actions.join('');
+                //     }
+                // }
+                ]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

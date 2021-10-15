@@ -1,0 +1,26 @@
+!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改自助排查维修统计')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-repairshistory-edit" th:object="${repairsHistory}">
+            <input name="selfId" th:field="*{selfId}" type="hidden">
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "manage/repairshistory";
+        $("#form-repairshistory-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-repairshistory-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

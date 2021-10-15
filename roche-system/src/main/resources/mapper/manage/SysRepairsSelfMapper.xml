@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roche.manage.mapper.SysRepairsSelfMapper">
+    
+    <resultMap type="SysRepairsSelf" id="SysRepairsSelfResult">
+        <result property="selfId"    column="self_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="repairsName"    column="repairs_name"    />
+        <result property="nameDescribe"    column="name_describe"    />
+        <result property="solution"    column="solution"    />
+        <result property="pictureDescription"    column="picture_description"    />
+        <result property="picture"    column="picture"    />
+        <result property="videoDescription"    column="video_description"    />
+        <result property="video"    column="video"    />
+        <result property="accessoryDescription"    column="accessory_description"    />
+        <result property="accessory"    column="accessory"    />
+        <result property="other"    column="other"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="machineType"    column="machine_type"    />
+        <result property="parentName" column="parent_name" />
+        <result property="treePath" column="tree_path" />
+    </resultMap>
+
+    <sql id="selectSysRepairsSelfVo">
+        select self_id, parent_id, repairs_name, tree_path,name_describe, solution, picture_description, picture,
+            video_description, video, accessory_description, accessory, other, order_num, machine_type ,tree_path from
+            sys_repairs_self
+    </sql>
+
+    <select id="selectSysRepairsSelfList" parameterType="SysRepairsSelf" resultMap="SysRepairsSelfResult">
+        <include refid="selectSysRepairsSelfVo"/>
+        <where>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="repairsName != null  and repairsName != ''"> and repairs_name like concat('%', #{repairsName}, '%')</if>
+            <if test="nameDescribe != null  and nameDescribe != ''"> and name_describe = #{nameDescribe}</if>
+            <if test="machineType != null  and machineType != ''"> and machine_type like concat('%', #{machineType}, '%')</if>
+        </where>
+        order by parent_id
+    </select>
+    
+    <select id="selectSysRepairsSelfBySelfId" parameterType="Long" resultMap="SysRepairsSelfResult">
+        select t.self_id, t.tree_path, t.parent_id, t.repairs_name, t.name_describe, t.solution, t.picture_description,
+            t.picture, t.video_description, t.video, t.accessory_description, t.accessory, t.other, t.order_num, t.machine_type, p.repairs_name as parent_name
+        from sys_repairs_self t
+        left join sys_repairs_self p on p.self_id = t.parent_id
+        where t.self_id = #{selfId}
+    </select>
+        
+    <insert id="insertSysRepairsSelf" parameterType="SysRepairsSelf" useGeneratedKeys="true" keyProperty="selfId">
+        insert into sys_repairs_self
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="repairsName != null">repairs_name,</if>
+            <if test="nameDescribe != null">name_describe,</if>
+            <if test="solution != null">solution,</if>
+            <if test="pictureDescription != null">picture_description,</if>
+            <if test="picture != null">picture,</if>
+            <if test="videoDescription != null">video_description,</if>
+            <if test="video != null">video,</if>
+            <if test="accessoryDescription != null">accessory_description,</if>
+            <if test="accessory != null">accessory,</if>
+            <if test="other != null">other,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="machineType != null">machine_type,</if>
+            <if test="treePath != null">tree_path,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="repairsName != null">#{repairsName},</if>
+            <if test="nameDescribe != null">#{nameDescribe},</if>
+            <if test="solution != null">#{solution},</if>
+            <if test="pictureDescription != null">#{pictureDescription},</if>
+            <if test="picture != null">#{picture},</if>
+            <if test="videoDescription != null">#{videoDescription},</if>
+            <if test="video != null">#{video},</if>
+            <if test="accessoryDescription != null">#{accessoryDescription},</if>
+            <if test="accessory != null">#{accessory},</if>
+            <if test="other != null">#{other},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="machineType != null">#{machineType},</if>
+            <if test="treePath != null">#{treePath},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysRepairsSelf" parameterType="SysRepairsSelf">
+        update sys_repairs_self
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="repairsName != null">repairs_name = #{repairsName},</if>
+            <if test="nameDescribe != null">name_describe = #{nameDescribe},</if>
+            <if test="solution != null">solution = #{solution},</if>
+            <if test="pictureDescription != null">picture_description = #{pictureDescription},</if>
+            <if test="picture != null">picture = #{picture},</if>
+            <if test="videoDescription != null">video_description = #{videoDescription},</if>
+            <if test="video != null">video = #{video},</if>
+            <if test="accessoryDescription != null">accessory_description = #{accessoryDescription},</if>
+            <if test="accessory != null">accessory = #{accessory},</if>
+            <if test="other != null">other = #{other},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="machineType != null">machine_type = #{machineType},</if>
+        </trim>
+        where self_id = #{selfId}
+    </update>
+    <update id="updateSysRepairsSelfByname" >
+        update sys_repairs_self
+
+     set machine_type = #{machineTypeAfter}
+
+        where machine_type = #{machineTypeBegore}
+    </update>
+    <delete id="deleteSysRepairsSelfBySelfId" parameterType="Long">
+        delete from sys_repairs_self where self_id = #{selfId}
+    </delete>
+
+    <delete id="deleteSysRepairsSelfBySelfIds" parameterType="String">
+        delete from sys_repairs_self where self_id in 
+        <foreach item="selfId" collection="array" open="(" separator="," close=")">
+            #{selfId}
+        </foreach>
+    </delete>
+
+</mapper>

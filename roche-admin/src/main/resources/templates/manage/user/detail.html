@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('详细')" />
+	<th:block th:include="include :: jsonview-css" />
+	<th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-user-edit" th:object="${rocheUser}">
+		<input name="userId" th:field="*{userId}" type="hidden">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">用户id：</label>
+			<div class="col-sm-8">
+				<p th:utext="*{userId}"></p>
+
+
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">昵称：</label>
+			<div class="col-sm-8">
+				<p th:utext="*{nickName}"></p>
+
+
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">年龄：</label>
+			<div class="col-sm-8">
+				<p th:utext="*{age}"></p>
+			</div>
+		</div>
+	</form>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: bootstrap-fileinput-js"/>
+<script th:inline="javascript">
+
+</script>
+
+</body>
+</html>

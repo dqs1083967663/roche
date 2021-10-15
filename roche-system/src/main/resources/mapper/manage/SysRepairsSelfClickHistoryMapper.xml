@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roche.manage.mapper.SysRepairsSelfClickHistoryMapper">
+    
+    <resultMap type="SysRepairsSelfClickHistory" id="SysRepairsSelfClickHistoryResult">
+        <result property="oid"    column="oid"    />
+        <result property="userId"    column="user_id"    />
+        <result property="selfId"    column="self_id"    />
+        <result property="usefullCheck"    column="usefull_check"    />
+    </resultMap>
+
+    <sql id="selectSysRepairsSelfClickHistoryVo">
+        select oid, user_id, self_id, usefull_check from sys_repairs_self_click_history
+    </sql>
+
+    <select id="selectSysRepairsSelfClickHistoryList" parameterType="SysRepairsSelfClickHistory" resultMap="SysRepairsSelfClickHistoryResult">
+        <include refid="selectSysRepairsSelfClickHistoryVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="selfId != null "> and self_id = #{selfId}</if>
+            <if test="usefullCheck != null  and usefullCheck != ''"> and usefull_check = #{usefullCheck}</if>
+        </where>
+    </select>
+    
+    <select id="selectUserName" parameterType="long" resultType="string">
+        SELECT  nick_name from roche_user WHERE user_id = #{userId}
+    </select>
+
+
+    <select id="selectSysRepairsSelfClickHistoryByOid" parameterType="String" resultMap="SysRepairsSelfClickHistoryResult">
+        <include refid="selectSysRepairsSelfClickHistoryVo"/>
+        where oid = #{oid}
+    </select>
+
+
+    <insert id="insertSysRepairsSelfClickHistory" parameterType="SysRepairsSelfClickHistory">
+        insert into sys_repairs_self_click_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="oid != null">oid,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="selfId != null">self_id,</if>
+            <if test="usefullCheck != null">usefull_check,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="oid != null">#{oid},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="selfId != null">#{selfId},</if>
+            <if test="usefullCheck != null">#{usefullCheck},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysRepairsSelfClickHistory" parameterType="SysRepairsSelfClickHistory">
+        update sys_repairs_self_click_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="selfId != null">self_id = #{selfId},</if>
+            <if test="usefullCheck != null">usefull_check = #{usefullCheck},</if>
+        </trim>
+        where oid = #{oid}
+    </update>
+
+    <delete id="deleteSysRepairsSelfClickHistoryByOid" parameterType="String">
+        delete from sys_repairs_self_click_history where oid = #{oid}
+    </delete>
+
+    <delete id="deleteSysRepairsSelfClickHistoryByOids" parameterType="String">
+        delete from sys_repairs_self_click_history where oid in 
+        <foreach item="oid" collection="array" open="(" separator="," close=")">
+            #{oid}
+        </foreach>
+    </delete>
+
+</mapper>

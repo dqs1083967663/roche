@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roche.manage.mapper.RocheMachineTypeMapper">
+    
+    <resultMap type="RocheMachineType" id="RocheMachineTypeResult">
+        <result property="machineTypeId"    column="machine_type_id"    />
+        <result property="machineType"    column="machine_type"    />
+        <result property="machineTypeName"    column="machine_type_name"    />
+        <result property="machineTypeDescribe"    column="machine_type_describe"    />
+        <result property="machineTypeImg"    column="machine_type_img"    />
+    </resultMap>
+
+    <sql id="selectRocheMachineTypeVo">
+        select machine_type_id, machine_type, machine_type_name, machine_type_describe, machine_type_img from roche_machine_type
+    </sql>
+
+    <select id="selectRocheMachineTypeList" parameterType="RocheMachineType" resultMap="RocheMachineTypeResult">
+        <include refid="selectRocheMachineTypeVo"/>
+        <where>  
+            <if test="machineType != null  and machineType != ''"> and machine_type = #{machineType}</if>
+            <if test="machineTypeName != null  and machineTypeName != ''"> and machine_type_name like concat('%', #{machineTypeName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectRocheMachineTypeByMachineTypeId" parameterType="Long" resultMap="RocheMachineTypeResult">
+        <include refid="selectRocheMachineTypeVo"/>
+        where machine_type_id = #{machineTypeId}
+    </select>
+        
+    <insert id="insertRocheMachineType" parameterType="RocheMachineType" useGeneratedKeys="true" keyProperty="machineTypeId">
+        insert into roche_machine_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="machineType != null and machineType != ''">machine_type,</if>
+            <if test="machineTypeName != null and machineTypeName != ''">machine_type_name,</if>
+            <if test="machineTypeDescribe != null">machine_type_describe,</if>
+            <if test="machineTypeImg != null">machine_type_img,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="machineType != null and machineType != ''">#{machineType},</if>
+            <if test="machineTypeName != null and machineTypeName != ''">#{machineTypeName},</if>
+            <if test="machineTypeDescribe != null">#{machineTypeDescribe},</if>
+            <if test="machineTypeImg != null">#{machineTypeImg},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRocheMachineType" parameterType="RocheMachineType">
+        update roche_machine_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="machineType != null and machineType != ''">machine_type = #{machineType},</if>
+            <if test="machineTypeName != null and machineTypeName != ''">machine_type_name = #{machineTypeName},</if>
+            <if test="machineTypeDescribe != null">machine_type_describe = #{machineTypeDescribe},</if>
+            <if test="machineTypeImg != null">machine_type_img = #{machineTypeImg},</if>
+        </trim>
+        where machine_type_id = #{machineTypeId}
+    </update>
+
+    <delete id="deleteRocheMachineTypeByMachineTypeId" parameterType="Long">
+        delete from roche_machine_type where machine_type_id = #{machineTypeId}
+    </delete>
+
+    <delete id="deleteRocheMachineTypeByMachineTypeIds" parameterType="String">
+        delete from roche_machine_type where machine_type_id in 
+        <foreach item="machineTypeId" collection="array" open="(" separator="," close=")">
+            #{machineTypeId}
+        </foreach>
+    </delete>
+
+</mapper>

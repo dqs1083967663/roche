@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('注册用户查询列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>昵称：</label>
+                                <input type="text" name="nickName"/>
+                            </li>
+                            <li>
+                                <label>年龄：</label>
+                                <input type="text" name="age" onkeyup="this.value=this.value.replace(/[^0-9-]+.[^0-9-]+/,'');"/>
+                            </li>
+                            <li>
+                                <label>性别：</label>
+                                <select name="sex" th:with="type=${@dict.getType('sys_user_sex')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>openId：</label>
+                                <input type="text" name="openId"/>
+                            </li>
+                            <li>
+                                <label>注册时间：</label>
+                                <input type="text" class="time-input" placeholder="请选择注册时间" name="registerTime"/>
+                            </li>
+                            <li>
+                                <label>修改时间：</label>
+                                <input type="text" class="time-input" placeholder="请选择修改时间" name="changeTime"/>
+                            </li>
+
+                            <li>
+                                <label>电话：</label>
+                                <input type="text" name="phoneNo" onkeyup="this.value=this.value.replace(/[^0-9-]+.[^0-9-]+/,'');"/>
+                            </li>
+
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                <!--<a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="manage:user:edit">-->
+                    <!--<i class="fa fa-edit"></i> 修改-->
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <!--<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="manage:user:add">-->
+                <!--<i class="fa fa-plus"></i> 添加-->
+                <!--</a>-->
+                <!--</a>-->
+                <!--<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="manage:user:remove">-->
+                    <!--<i class="fa fa-remove"></i> 删除-->
+                <!--</a>-->
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="manage:user:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('manage:user:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('manage:user:remove')}]];
+        var detailFlag =  [[${@permission.hasPermi('manage:user:detail')}]];
+        var sexDatas = [[${@dict.getType('sys_user_sex')}]];
+        var prefix = ctx + "manage/user";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                detailUrl: prefix + "/detail/{id}",
+                modalName: "注册用户查询",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'userId',
+                    title: '用户id',
+                    visible: false
+                },
+                {
+                    field: 'nickName',
+                    title: '昵称'
+                },
+                {
+                    field: 'age',
+                    title: '年龄'
+                },
+                {
+                    field: 'sex',
+                    title: '性别',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(sexDatas, value);
+                    }
+                },
+                {
+                    field: 'openId',
+                    title: 'openId'
+                },
+                {
+                    field: 'registerTime',
+                    title: '注册时间'
+                },
+                {
+                    field: 'changeTime',
+                    title: '修改时间'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a style="margin-right: 10px"  class="btn btn-warning btn-xs ' + detailFlag +
+                            '" href="javascript:void(0)" onclick="$.operate.detail(\'' + row.userId + '\')"><i class="fa fa-search"></i>详细</a>');
+                        // actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.userId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        // actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.userId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>
