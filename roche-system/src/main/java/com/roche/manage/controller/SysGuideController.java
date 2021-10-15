@@ -2,8 +2,14 @@ package com.roche.manage.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.roche.fegin.work.impl.RemoteService;
+import feign.Feign;
+import feign.Request;
+import feign.Retryer;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +26,8 @@ import com.roche.common.core.domain.AjaxResult;
 import com.roche.common.utils.poi.ExcelUtil;
 import com.roche.common.core.page.TableDataInfo;
 
+import javax.annotation.Resource;
+
 /**
  * 指引管理Controller
  * 
@@ -31,7 +39,8 @@ import com.roche.common.core.page.TableDataInfo;
 public class SysGuideController extends BaseController
 {
     private String prefix = "manage/guide";
-
+    @Autowired
+    private RedisTemplate<String, Object> test;
     @Autowired
     private ISysGuideService sysGuideService;
 
@@ -110,6 +119,21 @@ public class SysGuideController extends BaseController
     @ResponseBody
     public AjaxResult addSave(SysGuide sysGuide)
     {
+
+//        test.opsForValue().set("ff","get");
+//        System.out.println("!!!!!!!!!!!!!!!!!!"+test.opsForValue().get("ff"));
+//        RemoteService service = Feign.builder()
+//                .options(new Request.Options(1000, 3500))
+//                .retryer(new Retryer.Default(5000, 5000, 3))
+//                .target(RemoteService.class, "http://127.0.0.1:8081");
+//
+//        String teest = service.getOwner("test");
+//        RemoteService service = Feign.builder()
+//                .encoder(new JacksonEncoder())
+//                .decoder(new JacksonDecoder())
+//                .options(new Request.Options(1000, 3500))
+//                .retryer(new Retryer.Default(5000, 5000, 3))
+//                .target(RemoteService.class, "http://127.0.0.1:8085");
         return toAjax(sysGuideService.insertSysGuide(sysGuide));
     }
 

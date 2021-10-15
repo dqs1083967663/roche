@@ -1120,6 +1120,52 @@ public class ExcelUtil<T>
         tempFields.addAll(Arrays.asList(clazz.getDeclaredFields()));
         for (Field field : tempFields)
         {
+            String name = field.getName();
+            System.out.println("excle!!!!!!!!!!!!!!!!!!!!"+name);
+            System.out.println("excle!!!!!!!!!!!!!!!!!!!!"+field.getAnnotatedType());
+            System.out.println("!!!!!!!!!!!!"+field);
+            // 单注解
+            if (field.isAnnotationPresent(Excel.class)&&!name.equals("machineType"))
+            {
+                putToField(field, field.getAnnotation(Excel.class));
+            }
+
+            // 多注解
+            if (field.isAnnotationPresent(Excels.class))
+            {
+                Excels attrs = field.getAnnotation(Excels.class);
+                Excel[] excels = attrs.value();
+                for (Excel excel : excels)
+                {
+                    putToField(field, excel);
+                }
+            }
+        }
+        this.fields = this.fields.stream().sorted(Comparator.comparing(objects -> ((Excel) objects[1]).sort())).collect(Collectors.toList());
+
+        this.maxHeight = getRowHeight();
+    }
+
+
+    /**
+     * 得到所有定义字段
+     */
+    private void createExcelField(String[] name)
+    {
+        this.fields = new ArrayList<Object[]>();
+        List<Field> tempFields = new ArrayList<>();
+        tempFields.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));
+        tempFields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+        for (Field field : tempFields)
+        {
+            String fieldName = field.getName();
+
+//
+//            for (int i = 0; i <name.length ; i++) {
+//                if (name[i].equals())
+//            }
+
+
             // 单注解
             if (field.isAnnotationPresent(Excel.class))
             {
@@ -1138,6 +1184,7 @@ public class ExcelUtil<T>
             }
         }
         this.fields = this.fields.stream().sorted(Comparator.comparing(objects -> ((Excel) objects[1]).sort())).collect(Collectors.toList());
+
         this.maxHeight = getRowHeight();
     }
 

@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 /**
  * 启动程序
  * 
- * @author Aarn A Dong
+ * @author Aarn  Dong
  */
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 public class RocheApplication

@@ -26,6 +26,10 @@ public class SysGuide extends BaseEntity
     @Excel(name = "指引图片")
     private String guideImg;
 
+    /** 设备类型type */
+    @Excel(name = "设备类型type")
+    private String machineType;
+
     public void setGuideId(Long guideId) 
     {
         this.guideId = guideId;
@@ -54,12 +58,22 @@ public class SysGuide extends BaseEntity
         return guideImg;
     }
 
+    public String getMachineType() {
+        return machineType;
+    }
+
+    public void setMachineType(String machineType) {
+        this.machineType = machineType;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("guideId", getGuideId())
             .append("guideDescribe", getGuideDescribe())
             .append("guideImg", getGuideImg())
+
+                .append("machineType", getMachineType())
             .toString();
     }
 }

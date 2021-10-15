@@ -24,6 +24,7 @@ import com.roche.common.utils.StringUtils;
 @Component
 public class DataScopeAspect
 {
+
     /**
      * 全部数据权限
      */

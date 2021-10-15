@@ -8,10 +8,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="guideId"    column="guide_id"    />
         <result property="guideDescribe"    column="guide_describe"    />
         <result property="guideImg"    column="guide_img"    />
+        <result property="machineType"    column="machine_type"    />
     </resultMap>
 
     <sql id="selectSysGuideVo">
-        select guide_id, guide_describe, guide_img from sys_guide
+        select guide_id, guide_describe, guide_img, machine_type from sys_guide
     </sql>
 
     <select id="selectSysGuideList" parameterType="SysGuide" resultMap="SysGuideResult">
@@ -19,6 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="guideDescribe != null  and guideDescribe != ''"> and guide_describe like concat('%', #{guideDescribe}, '%')</if>
             <if test="guideImg != null  and guideImg != ''"> and guide_img = #{guideImg}</if>
+            <if test="machineType != null  and machineType != ''"> and machine_type like concat('%', #{machineType}, '%')</if>
         </where>
     </select>
     
@@ -32,10 +34,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="guideDescribe != null">guide_describe,</if>
             <if test="guideImg != null">guide_img,</if>
+            <if test="machineType != null">machine_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="guideDescribe != null">#{guideDescribe},</if>
             <if test="guideImg != null">#{guideImg},</if>
+            <if test="machineType != null">#{machineType},</if>
          </trim>
     </insert>
 
@@ -44,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="guideDescribe != null">guide_describe = #{guideDescribe},</if>
             <if test="guideImg != null">guide_img = #{guideImg},</if>
+            <if test="machineType != null">machine_type = #{machineType},</if>
         </trim>
         where guide_id = #{guideId}
     </update>

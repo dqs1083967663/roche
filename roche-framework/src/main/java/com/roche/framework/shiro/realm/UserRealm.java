@@ -37,7 +37,7 @@ import com.roche.system.service.ISysRoleService;
 /**
  * 自定义Realm 处理登录 权限
  * 
- * @author Aarn A Dong
+ * @author Aarn  Dong
  */
 public class UserRealm extends AuthorizingRealm
 {

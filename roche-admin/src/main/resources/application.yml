@@ -10,13 +10,14 @@ roche:
   demoEnabled: true
   # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
   profile: C:/roche/uploadPath
+#  profile: /roche/uploadPath
   # 获取ip地址开关
   addressEnabled: false
 
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为80
-  port: 82
+  port: 8088
   servlet:
     # 应用的访问路径
     context-path: /
@@ -137,3 +138,4 @@ xss:
 swagger:
   # 是否开启swagger
   enabled: true
+
